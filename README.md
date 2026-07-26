@@ -1,6 +1,10 @@
 # story_beat
 
-A new Flutter project.
+## To install dependencies
+
+```bash
+flutter pub get
+```
 
 ## Getting Started
 

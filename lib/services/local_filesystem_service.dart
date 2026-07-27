@@ -11,7 +11,7 @@ import 'filesystem_service.dart';
 class LocalFilesystemService implements FilesystemService {
   @override
   Future<Project?> openProject() async {
-    final path = await FilePicker.platform.getDirectoryPath();
+    final path = await FilePicker.getDirectoryPath();
 
     if (path == null) return null;
 

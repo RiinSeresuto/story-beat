@@ -66,10 +66,7 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                       child: Column(
                         children: [
-                          const Text(
-                            " H1  H2  B  I  ~~  []  "
-                            "  ```  *  1.  Link",
-                          ),
+                          const Text(" H1  H2  B  I  ~~  []  ```  *  1.  Link"),
                           Expanded(
                             child: EditorPanel(
                               project: project,

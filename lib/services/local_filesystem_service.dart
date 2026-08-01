@@ -21,16 +21,43 @@ class LocalFilesystemService implements FilesystemService {
 
   @override
   Future<List<BinderItem>> loadBinder(String projectPath) async {
-    final directory = Directory(projectPath);
-
+    final rootDirectory = Directory(projectPath);
     final items = <BinderItem>[];
 
-    for (final entity in directory.listSync()) {
+    for (final entity in rootDirectory.listSync()) {
       final name = p.basename(entity.path);
 
+      // Folder
       if (entity is Directory) {
-        items.add(BinderFolder(id: entity.path, name: name, path: entity.path));
-      } else if (entity is File && entity.path.endsWith('.md')) {
+        final children = <BinderItem>[];
+
+        for (final child in entity.listSync()) {
+          // Only include markdown files
+          if (child is File && child.path.endsWith('.md')) {
+            children.add(
+              BinderDocument(
+                id: child.path,
+                name: p.basename(child.path),
+                path: child.path,
+              ),
+            );
+          }
+        }
+
+        items.add(
+          BinderFolder(
+            id: entity.path,
+            name: name,
+            path: entity.path,
+            children: children,
+          ),
+        );
+
+        continue;
+      }
+
+      // Root documents
+      if (entity is File && entity.path.endsWith('.md')) {
         items.add(
           BinderDocument(id: entity.path, name: name, path: entity.path),
         );

@@ -1,11 +1,13 @@
 import 'binder_item.dart';
 
 class BinderFolder extends BinderItem {
+  final List<BinderItem> children;
+
   const BinderFolder({
     required super.id,
     required super.name,
     required super.path,
-    super.parentId,
+    this.children = const [],
   });
 
   @override

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as p;
 
 import '../models/project.dart';
 import '../models/binder_item.dart';
@@ -25,7 +26,7 @@ class LocalFilesystemService implements FilesystemService {
     final items = <BinderItem>[];
 
     for (final entity in directory.listSync()) {
-      final name = entity.uri.pathSegments.last;
+      final name = p.basename(entity.path);
 
       if (entity is Directory) {
         items.add(BinderFolder(id: entity.path, name: name, path: entity.path));

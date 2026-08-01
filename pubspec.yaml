@@ -41,6 +41,7 @@ dependencies:
             path: super_editor
             ref: main
     file_picker: ^11.0.2
+    path: ^1.9.0
 
 dev_dependencies:
     flutter_test:

@@ -25,7 +25,11 @@ class LocalFilesystemService implements FilesystemService {
     final items = <BinderItem>[];
 
     for (final entity in rootDirectory.listSync()) {
-      final name = p.basename(entity.path);
+      final name = p.basenameWithoutExtension(entity.path);
+
+      if (name.startsWith('.')) {
+        continue;
+      }
 
       // Folder
       if (entity is Directory) {
@@ -37,7 +41,7 @@ class LocalFilesystemService implements FilesystemService {
             children.add(
               BinderDocument(
                 id: child.path,
-                name: p.basename(child.path),
+                name: p.basenameWithoutExtension(child.path),
                 path: child.path,
               ),
             );

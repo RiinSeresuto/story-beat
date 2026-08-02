@@ -90,23 +90,22 @@ class LocalFilesystemService implements FilesystemService {
   }
 
   @override
-  Future<String> createDocument(String folderPath) async {
-    var counter = 1;
+  Future<String> createDocument(String folderPath, String filename) async {
+    final cleanName = filename.trim();
 
-    while (true) {
-      final filename = counter == 1 ? 'Untitled.md' : 'Untitled $counter.md';
-
-      final fullPath = p.join(folderPath, filename);
-
-      final file = File(fullPath);
-
-      if (!await file.exists()) {
-        await file.create(recursive: true);
-        return fullPath;
-      }
-
-      counter++;
+    if (cleanName.isEmpty) {
+      throw Exception("Filename cannot be empty.");
     }
+
+    final file = File(p.join(folderPath, "$cleanName.md"));
+
+    if (await file.exists()) {
+      throw Exception("A document with that name already exists.");
+    }
+
+    await file.create();
+
+    return file.path;
   }
 
   @override

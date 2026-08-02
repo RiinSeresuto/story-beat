@@ -10,7 +10,7 @@ abstract class FilesystemService {
 
   Future<void> saveDocument(String path, String content);
 
-  Future<String> createDocument(String folderPath);
+  Future<String> createDocument(String folderPath, String filename);
 
   Future<String> renameDocument(String oldPath, String newName);
 }

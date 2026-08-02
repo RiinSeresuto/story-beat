@@ -68,9 +68,10 @@ class BinderPanel extends StatelessWidget {
             _buildFolder(item),
 
             for (final child in item.children)
-              if (child is BinderDocument) _buildDocument(child),
-          ] else if (item is BinderDocument)
-            _buildDocument(item),
+              if (child is BinderDocument)
+                _buildDocument(folder: item, document: child),
+          ], //else if (item is BinderDocument)
+          // _buildDocument(item),
         ],
       ],
     );
@@ -107,8 +108,8 @@ class BinderPanel extends StatelessWidget {
           ),
 
           TextButton(
-            onPressed: () async {
-              await projectController.addFile(folder);
+            onPressed: () {
+              projectController.startCreatingFile(folder);
             },
             child: const Icon(Icons.post_add_sharp),
           ),
@@ -117,8 +118,46 @@ class BinderPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildDocument(BinderDocument document) {
+  Widget _buildDocument({
+    required BinderFolder folder,
+    required BinderDocument document,
+  }) {
+    if (document.isEditing) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 36, right: 12),
+        child: TextField(
+          autofocus: true,
+          decoration: const InputDecoration(
+            hintText: "Document name",
+            border: InputBorder.none,
+            isDense: true,
+          ),
+          onSubmitted: (value) async {
+            if (value.trim().isEmpty) {
+              return;
+            }
+
+            await projectController.createDocument(folder, value);
+          },
+        ),
+      );
+    }
+
     final selected = selectedItem?.id == document.id;
+
+    if (document.isEditing) {
+      return const Padding(
+        padding: EdgeInsets.only(left: 36, right: 12),
+        child: TextField(
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: "Document name",
+            isDense: true,
+            border: InputBorder.none,
+          ),
+        ),
+      );
+    }
 
     return Material(
       color: AppColors.background,

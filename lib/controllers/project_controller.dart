@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:story_beat/models/binder_document.dart';
 import 'package:story_beat/models/binder_folder.dart';
 
 import '../models/binder_item.dart';
@@ -43,10 +44,32 @@ class ProjectController extends ChangeNotifier {
     }
   }
 
-  Future<void> addFile(BinderFolder folder) async {
-    await _filesystem.createDocument(folder.path);
+  Future<void> createDocument(BinderFolder folder, String filename) async {
+    await _filesystem.createDocument(folder.path, filename);
 
     await refresh();
+  }
+
+  Future<void> startCreatingFile(BinderFolder folder) async {
+    final index = _binderItems.indexWhere((e) => e.id == folder.id);
+
+    if (index == -1) return;
+
+    final updatedFolder = folder.copyWith(
+      children: [
+        ...folder.children,
+        const BinderDocument(
+          id: '__new__',
+          name: '',
+          path: '',
+          isEditing: true,
+        ),
+      ],
+    );
+
+    _binderItems[index] = updatedFolder;
+
+    notifyListeners();
   }
 
   void selectItem(BinderItem item) {

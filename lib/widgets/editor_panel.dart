@@ -17,60 +17,63 @@ class EditorPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentProject = project;
-
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppColors.background,
-        border: Border.all(color: AppColors.border, width: 1.0),
+        border: Border.all(color: AppColors.border),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : project == null
-          ? const Center(
-              child: Text(
-                "Open a folder to start writing.",
-                style: TextStyle(color: AppColors.text),
-              ),
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  selectedItem?.name ?? "No document selected",
-                  style: const TextStyle(
-                    color: AppColors.text,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  selectedItem?.path ?? currentProject!.path,
-                  style: const TextStyle(
-                    color: AppColors.text,
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const Expanded(
-                  child: TextField(
-                    expands: true,
-                    maxLines: null,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "Start writing...",
-                    ),
-                    style: TextStyle(fontSize: 18, height: 1.8),
-                    cursorWidth: 2,
-                    cursorHeight: 24,
-                    cursorColor: AppColors.text,
-                  ),
-                ),
-              ],
+      child: _buildContent(),
+    );
+  }
+
+  Widget _buildContent() {
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (project == null) {
+      return const Center(
+        child: Text(
+          "Open a folder to start writing.",
+          style: TextStyle(color: AppColors.text),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          selectedItem?.name ?? "No document selected",
+          style: const TextStyle(
+            color: AppColors.text,
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          selectedItem?.path ?? project!.path,
+          style: const TextStyle(color: AppColors.text, fontSize: 12),
+        ),
+        const SizedBox(height: 16),
+        const Expanded(
+          child: TextField(
+            expands: true,
+            maxLines: null,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: "Start writing...",
             ),
+            style: TextStyle(fontSize: 18, height: 1.8),
+            cursorWidth: 2,
+            cursorHeight: 24,
+            cursorColor: AppColors.text,
+          ),
+        ),
+      ],
     );
   }
 }

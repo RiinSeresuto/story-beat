@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:story_beat/models/binder_folder.dart';
 
 import '../models/binder_item.dart';
 import '../models/project.dart';
@@ -40,6 +41,12 @@ class ProjectController extends ChangeNotifier {
       _loading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> addFile(BinderFolder folder) async {
+    await _filesystem.createDocument(folder.path);
+
+    await refresh();
   }
 
   void selectItem(BinderItem item) {

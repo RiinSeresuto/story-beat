@@ -60,6 +60,7 @@ class _HomePageState extends State<HomePage> {
                         selectedItem: selectedItem,
                         isLoading: isLoading,
                         onItemSelected: controller.selectItem,
+                        projectController: controller,
                       ),
                     ),
 

@@ -50,6 +50,32 @@ class ProjectController extends ChangeNotifier {
     await refresh();
   }
 
+  Future<void> createFolder(String folderName) async {
+    if (_project == null) return;
+
+    await _filesystem.createFolder(_project!.path, folderName);
+
+    await refresh();
+  }
+
+  void startCreatingFolder() {
+    if (_project == null) return;
+
+    cancelCreateFolder();
+
+    _binderItems = [
+      ..._binderItems,
+      const BinderFolder(
+        id: '__new_folder__',
+        name: '',
+        path: '',
+        isEditing: true,
+      ),
+    ];
+
+    notifyListeners();
+  }
+
   Future<void> startCreatingFile(BinderFolder folder) async {
     final index = _binderItems.indexWhere((e) => e.id == folder.id);
 
@@ -80,6 +106,14 @@ class ProjectController extends ChangeNotifier {
   void cancelCreateDocument(BinderFolder folder) {
     folder.children.removeWhere(
       (item) => item is BinderDocument && item.isEditing,
+    );
+
+    notifyListeners();
+  }
+
+  void cancelCreateFolder() {
+    _binderItems.removeWhere(
+      (item) => item is BinderFolder && item.isEditing,
     );
 
     notifyListeners();

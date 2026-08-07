@@ -12,5 +12,7 @@ abstract class FilesystemService {
 
   Future<String> createDocument(String folderPath, String filename);
 
+  Future<String> createFolder(String projectPath, String folderName);
+
   Future<String> renameDocument(String oldPath, String newName);
 }

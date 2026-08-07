@@ -109,6 +109,25 @@ class LocalFilesystemService implements FilesystemService {
   }
 
   @override
+  Future<String> createFolder(String projectPath, String folderName) async {
+    final cleanName = folderName.trim();
+
+    if (cleanName.isEmpty) {
+      throw Exception("Folder name cannot be empty.");
+    }
+
+    final directory = Directory(p.join(projectPath, cleanName));
+
+    if (await directory.exists()) {
+      throw Exception("A folder with that name already exists.");
+    }
+
+    await directory.create();
+
+    return directory.path;
+  }
+
+  @override
   Future<String> renameDocument(String oldPath, String newName) async {
     final directory = p.dirname(oldPath);
 

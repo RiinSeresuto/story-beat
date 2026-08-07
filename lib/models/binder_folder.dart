@@ -7,9 +7,11 @@ class BinderFolder extends BinderItem {
     required super.path,
     super.parentId,
     this.children = const [],
+    this.isEditing = false,
   });
 
   final List<BinderItem> children;
+  final bool isEditing;
 
   BinderFolder copyWith({
     String? id,
@@ -17,6 +19,7 @@ class BinderFolder extends BinderItem {
     String? path,
     String? parentId,
     List<BinderItem>? children,
+    bool? isEditing,
   }) {
     return BinderFolder(
       id: id ?? this.id,
@@ -24,6 +27,7 @@ class BinderFolder extends BinderItem {
       path: path ?? this.path,
       parentId: parentId ?? this.parentId,
       children: children ?? this.children,
+      isEditing: isEditing ?? this.isEditing,
     );
   }
 

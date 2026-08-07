@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:story_beat/controllers/project_controller.dart';
 
 import '../models/binder_document.dart';
@@ -125,39 +126,40 @@ class BinderPanel extends StatelessWidget {
     if (document.isEditing) {
       return Padding(
         padding: const EdgeInsets.only(left: 36, right: 12),
-        child: TextField(
-          autofocus: true,
-          decoration: const InputDecoration(
-            hintText: "Document name",
-            border: InputBorder.none,
-            isDense: true,
-          ),
-          onSubmitted: (value) async {
-            if (value.trim().isEmpty) {
-              return;
+        child: Focus(
+          onKeyEvent: (_, event) {
+            if (event is KeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.escape) {
+              projectController.cancelCreateDocument(folder);
+              return KeyEventResult.handled;
             }
 
-            await projectController.createDocument(folder, value);
+            return KeyEventResult.ignored;
           },
+          child: TextField(
+            autofocus: true,
+            decoration: const InputDecoration(
+              hintText: "Document name",
+              border: InputBorder.none,
+              isDense: true,
+            ),
+            onTapOutside: (_) {
+              projectController.cancelCreateDocument(folder);
+            },
+            onSubmitted: (value) async {
+              if (value.trim().isEmpty) {
+                projectController.cancelCreateDocument(folder);
+                return;
+              }
+
+              await projectController.createDocument(folder, value);
+            },
+          ),
         ),
       );
     }
 
     final selected = selectedItem?.id == document.id;
-
-    if (document.isEditing) {
-      return const Padding(
-        padding: EdgeInsets.only(left: 36, right: 12),
-        child: TextField(
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: "Document name",
-            isDense: true,
-            border: InputBorder.none,
-          ),
-        ),
-      );
-    }
 
     return Material(
       color: AppColors.background,

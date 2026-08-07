@@ -77,6 +77,14 @@ class ProjectController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void cancelCreateDocument(BinderFolder folder) {
+    folder.children.removeWhere(
+      (item) => item is BinderDocument && item.isEditing,
+    );
+
+    notifyListeners();
+  }
+
   Future<void> refresh() async {
     if (_project == null) return;
 

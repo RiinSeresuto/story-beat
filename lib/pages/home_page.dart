@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:story_beat/controllers/project_controller.dart';
 import 'package:story_beat/services/local_filesystem_service.dart';
+import 'package:story_beat/widgets/editor_toolbar.dart';
+import 'package:story_beat/widgets/status_bar.dart';
 
 import '../widgets/app_toolbar.dart';
 import '../widgets/binder_panel.dart';
@@ -66,8 +68,10 @@ class _HomePageState extends State<HomePage> {
 
                     Expanded(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const Text(" H1  H2  B  I  ~~  []  ```  *  1.  Link"),
+                          EditorToolbar(),
+
                           Expanded(
                             child: EditorPanel(
                               project: project,
@@ -75,11 +79,8 @@ class _HomePageState extends State<HomePage> {
                               isLoading: isLoading,
                             ),
                           ),
-                          Text(
-                            project == null
-                                ? "Open a folder to begin"
-                                : "${items.length} item${items.length == 1 ? '' : 's'}",
-                          ),
+
+                          StatusBar(project: project, items: items),
                         ],
                       ),
                     ),

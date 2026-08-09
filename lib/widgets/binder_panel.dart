@@ -536,7 +536,6 @@ class _RenameBinderItemDialogState extends State<_RenameBinderItemDialog> {
         controller: _controller,
         decoration: InputDecoration(
           labelText: item.isFolder ? 'Folder name' : 'Document name',
-          suffixText: item.isDocument ? '.md' : null,
         ),
         onSubmitted: (value) {
           Navigator.of(context).pop(value);

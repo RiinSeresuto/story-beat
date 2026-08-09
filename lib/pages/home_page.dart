@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:story_beat/controllers/project_controller.dart';
-import 'package:story_beat/models/markdown_document.dart';
 import 'package:story_beat/services/local_filesystem_service.dart';
 import 'package:story_beat/widgets/editor_toolbar.dart';
 import 'package:story_beat/widgets/status_bar.dart';

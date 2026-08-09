@@ -80,24 +80,6 @@ class _EditorPanelState extends State<EditorPanel> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.selectedItem?.name ?? "No document selected",
-          style: const TextStyle(
-            color: AppColors.text,
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
-          ),
-        ),
-
-        const SizedBox(height: 8),
-
-        Text(
-          widget.selectedItem?.path ?? widget.project!.path,
-          style: const TextStyle(color: AppColors.text, fontSize: 12),
-        ),
-
-        const SizedBox(height: 16),
-
         Expanded(
           child: TextField(
             controller: _textController,

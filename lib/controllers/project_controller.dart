@@ -3,6 +3,7 @@ import 'package:story_beat/helper/markdown_parser.dart';
 import 'package:story_beat/models/binder_document.dart';
 import 'package:story_beat/models/binder_folder.dart';
 import 'package:story_beat/models/markdown_document.dart';
+import "dart:convert";
 
 import '../models/binder_item.dart';
 import '../models/project.dart';
@@ -142,7 +143,8 @@ class ProjectController extends ChangeNotifier {
     if (item is BinderDocument) {
       final content = await _filesystem.readDocument(item.path);
 
-      print(content);
+      print(item.path);
+      print(jsonEncode(content));
 
       _markdownDocument = MarkdownParser.format(content);
     } else {

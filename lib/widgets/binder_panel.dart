@@ -81,12 +81,7 @@ class BinderPanel extends StatelessWidget {
                               folder: item,
                               document: child,
                             ),
-                      ] else if (item is BinderDocument)
-                        _buildDocument(
-                          context: context,
-                          document: item,
-                          leftPadding: 12,
-                        ),
+                      ],
                     ],
                   ],
                 ),
@@ -170,7 +165,6 @@ class BinderPanel extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                onTap: () => onItemSelected(folder),
               ),
             ),
 
@@ -302,7 +296,7 @@ class BinderPanel extends StatelessWidget {
             document.name,
             style: const TextStyle(color: AppColors.text, fontSize: 12),
           ),
-          onTap: () => onItemSelected(document),
+          onTap: () => projectController.selectItem(document),
         ),
       ),
     );

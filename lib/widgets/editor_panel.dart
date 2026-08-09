@@ -1,19 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:story_beat/models/binder_item.dart';
+import 'package:story_beat/models/markdown_document.dart';
 import 'package:story_beat/models/project.dart';
 import 'package:story_beat/theme/app_colors.dart';
 
-class EditorPanel extends StatelessWidget {
+class EditorPanel extends StatefulWidget {
   const EditorPanel({
     super.key,
     required this.project,
     required this.selectedItem,
     required this.isLoading,
+    required this.markdownDocument,
   });
 
   final Project? project;
   final BinderItem? selectedItem;
   final bool isLoading;
+  final MarkdownDocument? markdownDocument;
+
+  @override
+  State<EditorPanel> createState() => _EditorPanelState();
+}
+
+class _EditorPanelState extends State<EditorPanel> {
+  late final TextEditingController _textController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _textController = TextEditingController(
+      text: widget.markdownDocument?.body ?? '',
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant EditorPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Update the editor when a different document is selected.
+    if (oldWidget.selectedItem?.id != widget.selectedItem?.id) {
+      _textController.text = widget.markdownDocument?.body ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +64,11 @@ class EditorPanel extends StatelessWidget {
   }
 
   Widget _buildContent() {
-    if (isLoading) {
+    if (widget.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (project == null) {
+    if (widget.project == null) {
       return const Center(
         child: Text(
           "Open a folder to start writing.",
@@ -46,28 +81,33 @@ class EditorPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          selectedItem?.name ?? "No document selected",
+          widget.selectedItem?.name ?? "No document selected",
           style: const TextStyle(
             color: AppColors.text,
             fontWeight: FontWeight.w600,
             fontSize: 18,
           ),
         ),
+
         const SizedBox(height: 8),
+
         Text(
-          selectedItem?.path ?? project!.path,
+          widget.selectedItem?.path ?? widget.project!.path,
           style: const TextStyle(color: AppColors.text, fontSize: 12),
         ),
+
         const SizedBox(height: 16),
-        const Expanded(
+
+        Expanded(
           child: TextField(
+            controller: _textController,
             expands: true,
             maxLines: null,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: InputBorder.none,
               hintText: "Start writing...",
             ),
-            style: TextStyle(fontSize: 18, height: 1.8),
+            style: const TextStyle(fontSize: 18, height: 1.8),
             cursorWidth: 2,
             cursorHeight: 24,
             cursorColor: AppColors.text,

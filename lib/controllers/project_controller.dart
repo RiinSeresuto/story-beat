@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:story_beat/helper/markdown_parser.dart';
 import 'package:story_beat/models/binder_document.dart';
 import 'package:story_beat/models/binder_folder.dart';
+import 'package:story_beat/models/markdown_document.dart';
 
 import '../models/binder_item.dart';
 import '../models/project.dart';
@@ -17,11 +19,13 @@ class ProjectController extends ChangeNotifier {
   List<BinderItem> _binderItems = [];
   BinderItem? _selectedItem;
   bool _loading = false;
+  MarkdownDocument? _markdownDocument;
 
   Project? get project => _project;
   List<BinderItem> get binderItems => List.unmodifiable(_binderItems);
   BinderItem? get selectedItem => _selectedItem;
   bool get isLoading => _loading;
+  MarkdownDocument? get markdownDocument => _markdownDocument;
 
   Future<void> openProject() async {
     _loading = true;
@@ -132,8 +136,19 @@ class ProjectController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void selectItem(BinderItem item) {
+  Future<void> selectItem(BinderItem item) async {
     _selectedItem = item;
+
+    if (item is BinderDocument) {
+      final content = await _filesystem.readDocument(item.path);
+
+      print(content);
+
+      _markdownDocument = MarkdownParser.format(content);
+    } else {
+      _markdownDocument = null;
+    }
+
     notifyListeners();
   }
 

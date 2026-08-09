@@ -4,6 +4,7 @@ import 'package:story_beat/models/binder_folder.dart';
 
 import '../models/binder_item.dart';
 import '../models/project.dart';
+import '../models/trash_item.dart';
 import '../services/filesystem_service.dart';
 
 class ProjectController extends ChangeNotifier {
@@ -54,6 +55,39 @@ class ProjectController extends ChangeNotifier {
     if (_project == null) return;
 
     await _filesystem.createFolder(_project!.path, folderName);
+
+    await refresh();
+  }
+
+  Future<void> renameItem(BinderItem item, String newName) async {
+    final renamed = await _filesystem.renameItem(item, newName);
+
+    await refresh();
+
+    if (_selectedItem?.id == item.id) {
+      _selectedItem = _findItemByPath(renamed.path);
+      notifyListeners();
+    }
+  }
+
+  Future<void> moveToTrash(BinderItem item) async {
+    await _filesystem.moveToTrash(item);
+
+    if (_selectedItem?.id == item.id || _containsItem(item, _selectedItem)) {
+      _selectedItem = null;
+    }
+
+    await refresh();
+  }
+
+  Future<List<TrashItem>> listTrash() async {
+    if (_project == null) return [];
+
+    return _filesystem.listTrash(_project!.path);
+  }
+
+  Future<void> recoverTrashItem(TrashItem item) async {
+    await _filesystem.recoverTrashItem(item);
 
     await refresh();
   }
@@ -112,9 +146,7 @@ class ProjectController extends ChangeNotifier {
   }
 
   void cancelCreateFolder() {
-    _binderItems.removeWhere(
-      (item) => item is BinderFolder && item.isEditing,
-    );
+    _binderItems.removeWhere((item) => item is BinderFolder && item.isEditing);
 
     notifyListeners();
   }
@@ -125,5 +157,31 @@ class ProjectController extends ChangeNotifier {
     _binderItems = await _filesystem.loadBinder(_project!.path);
 
     notifyListeners();
+  }
+
+  BinderItem? _findItemByPath(String path) {
+    for (final item in _binderItems) {
+      if (item.path == path) {
+        return item;
+      }
+
+      if (item is BinderFolder) {
+        for (final child in item.children) {
+          if (child.path == path) {
+            return child;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
+  bool _containsItem(BinderItem item, BinderItem? candidate) {
+    if (candidate == null || item is! BinderFolder) {
+      return false;
+    }
+
+    return item.children.any((child) => child.id == candidate.id);
   }
 }

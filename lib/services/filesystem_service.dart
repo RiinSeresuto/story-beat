@@ -1,5 +1,6 @@
 import '../models/project.dart';
 import '../models/binder_item.dart';
+import '../models/trash_item.dart';
 
 abstract class FilesystemService {
   Future<Project?> openProject();
@@ -15,4 +16,12 @@ abstract class FilesystemService {
   Future<String> createFolder(String projectPath, String folderName);
 
   Future<String> renameDocument(String oldPath, String newName);
+
+  Future<BinderItem> renameItem(BinderItem item, String newName);
+
+  Future<void> moveToTrash(BinderItem item);
+
+  Future<List<TrashItem>> listTrash(String projectPath);
+
+  Future<void> recoverTrashItem(TrashItem item);
 }

@@ -143,13 +143,17 @@ class ProjectController extends ChangeNotifier {
     if (item is BinderDocument) {
       final content = await _filesystem.readDocument(item.path);
 
-      print(item.path);
-      print(jsonEncode(content));
-
       _markdownDocument = MarkdownParser.format(content);
     } else {
       _markdownDocument = null;
     }
+
+    notifyListeners();
+  }
+
+  void closeDocument() {
+    _selectedItem = null;
+    _markdownDocument = null;
 
     notifyListeners();
   }

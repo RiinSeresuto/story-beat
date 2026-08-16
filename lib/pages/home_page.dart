@@ -7,7 +7,6 @@ import 'package:story_beat/widgets/status_bar.dart';
 import '../widgets/app_toolbar.dart';
 import '../widgets/binder_panel.dart';
 import '../widgets/editor_panel.dart';
-import '../widgets/inspector_panel.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -53,49 +52,36 @@ class _HomePageState extends State<HomePage> {
               ),
 
               Expanded(
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 260,
-                      child: BinderPanel(
-                        project: project,
-                        items: items,
-                        selectedItem: selectedItem,
-                        isLoading: isLoading,
-                        onItemSelected: controller.selectItem,
-                        projectController: controller,
-                      ),
-                    ),
+                child: Center(
+                  child: SizedBox(
+                    width: 900,
+                    child: selectedItem == null
+                        ? BinderPanel(
+                            project: project,
+                            items: items,
+                            selectedItem: selectedItem,
+                            isLoading: isLoading,
+                            onItemSelected: controller.selectItem,
+                            projectController: controller,
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              EditorToolbar(projectController: controller),
 
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          EditorToolbar(),
+                              Expanded(
+                                child: EditorPanel(
+                                  project: project,
+                                  selectedItem: selectedItem,
+                                  isLoading: isLoading,
+                                  markdownDocument: markdownDocument,
+                                ),
+                              ),
 
-                          Expanded(
-                            child: EditorPanel(
-                              project: project,
-                              selectedItem: selectedItem,
-                              isLoading: isLoading,
-                              markdownDocument: markdownDocument,
-                            ),
+                              StatusBar(project: project, items: items),
+                            ],
                           ),
-
-                          StatusBar(project: project, items: items),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(
-                      width: 260,
-                      child: InspectorPanel(
-                        project: project,
-                        selectedItem: selectedItem,
-                        isLoading: isLoading,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ],

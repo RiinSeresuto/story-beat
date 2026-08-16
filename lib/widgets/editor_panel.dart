@@ -3,6 +3,7 @@ import 'package:story_beat/models/binder_item.dart';
 import 'package:story_beat/models/markdown_document.dart';
 import 'package:story_beat/models/project.dart';
 import 'package:story_beat/theme/app_colors.dart';
+import 'package:super_editor/super_editor.dart';
 
 class EditorPanel extends StatefulWidget {
   const EditorPanel({
@@ -11,45 +12,20 @@ class EditorPanel extends StatefulWidget {
     required this.selectedItem,
     required this.isLoading,
     required this.markdownDocument,
+    required this.editor,
   });
 
   final Project? project;
   final BinderItem? selectedItem;
   final bool isLoading;
   final MarkdownDocument? markdownDocument;
+  final Editor? editor;
 
   @override
   State<EditorPanel> createState() => _EditorPanelState();
 }
 
 class _EditorPanelState extends State<EditorPanel> {
-  late final TextEditingController _textController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _textController = TextEditingController(
-      text: widget.markdownDocument?.body ?? '',
-    );
-  }
-
-  @override
-  void didUpdateWidget(covariant EditorPanel oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // Update the editor when a different document is selected.
-    if (oldWidget.selectedItem?.id != widget.selectedItem?.id) {
-      _textController.text = widget.markdownDocument?.body ?? '';
-    }
-  }
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -77,25 +53,33 @@ class _EditorPanelState extends State<EditorPanel> {
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: TextField(
-            controller: _textController,
-            expands: true,
-            maxLines: null,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              hintText: "Start writing...",
-            ),
-            style: const TextStyle(fontSize: 18, height: 1.8),
-            cursorWidth: 2,
-            cursorHeight: 24,
-            cursorColor: AppColors.text,
-          ),
+    final editor = widget.editor;
+
+    if (editor == null) {
+      return const Center(
+        child: Text(
+          "Select a document to start writing.",
+          style: TextStyle(color: AppColors.text),
         ),
+      );
+    }
+
+    return SuperEditor(
+      editor: editor,
+      componentBuilders: [
+        TaskComponentBuilder(editor),
+        ...defaultComponentBuilders,
       ],
+      stylesheet: defaultStylesheet.copyWith(
+        documentPadding: EdgeInsets.zero,
+        inlineTextStyler: (attributions, existingStyle) {
+          return defaultInlineTextStyler(attributions, existingStyle).copyWith(
+            color: AppColors.text,
+            fontSize: 18,
+            height: 1.8,
+          );
+        },
+      ),
     );
   }
 }

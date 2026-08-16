@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:story_beat/controllers/project_controller.dart';
 import 'package:story_beat/services/local_filesystem_service.dart';
+import 'package:story_beat/theme/app_colors.dart';
 import 'package:story_beat/widgets/editor_toolbar.dart';
 import 'package:story_beat/widgets/status_bar.dart';
 
@@ -34,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: AnimatedBuilder(
         animation: controller,
         builder: (context, _) {
@@ -43,48 +45,52 @@ class _HomePageState extends State<HomePage> {
           final isLoading = controller.isLoading;
           final markdownDocument = controller.markdownDocument;
 
-          return Column(
-            children: [
-              AppToolbar(
-                projectController: controller,
-                project: project,
-                isLoading: isLoading,
-              ),
+          return ColoredBox(
+            color: AppColors.background,
+            child: Column(
+              children: [
+                AppToolbar(
+                  projectController: controller,
+                  project: project,
+                  isLoading: isLoading,
+                ),
 
-              Expanded(
-                child: Center(
-                  child: SizedBox(
-                    width: 900,
-                    child: selectedItem == null
-                        ? BinderPanel(
-                            project: project,
-                            items: items,
-                            selectedItem: selectedItem,
-                            isLoading: isLoading,
-                            onItemSelected: controller.selectItem,
-                            projectController: controller,
-                          )
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              EditorToolbar(projectController: controller),
+                Expanded(
+                  child: Center(
+                    child: SizedBox(
+                      width: 900,
+                      child: selectedItem == null
+                          ? BinderPanel(
+                              project: project,
+                              items: items,
+                              selectedItem: selectedItem,
+                              isLoading: isLoading,
+                              onItemSelected: controller.selectItem,
+                              projectController: controller,
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                EditorToolbar(projectController: controller),
 
-                              Expanded(
-                                child: EditorPanel(
-                                  project: project,
-                                  selectedItem: selectedItem,
-                                  isLoading: isLoading,
-                                  markdownDocument: markdownDocument,
+                                Expanded(
+                                  child: EditorPanel(
+                                    project: project,
+                                    selectedItem: selectedItem,
+                                    isLoading: isLoading,
+                                    markdownDocument: markdownDocument,
+                                    editor: controller.editor,
+                                  ),
                                 ),
-                              ),
 
-                              StatusBar(project: project, items: items),
-                            ],
-                          ),
+                                StatusBar(project: project, items: items),
+                              ],
+                            ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
